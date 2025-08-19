@@ -1,9 +1,19 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
-
 class User(AbstractUser):
-    role = models.CharField(max_length=50, blank=True, null=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
 
+    groups = models.ManyToManyField(
+        Group,
+        related_name="inventory_users",
+        blank=True,
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name="inventory_users_permissions",
+        blank=True,
+    )
+    
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
