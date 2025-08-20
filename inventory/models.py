@@ -1,47 +1,49 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 
 class User(AbstractUser):
-    role = models.CharField(max_length=50, blank=True, null=True)
+    ROLE_CHOICES = (
+        ('admin', 'Admin'),
+        ('staff', 'Staff'),
+    )
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='staff')
+
+    def __str__(self):
+        return self.username
 
 class Category(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)  # ✅ Added
-    updated_at = models.DateTimeField(auto_now=True)      # ✅ Added
+    name = models.CharField(max_length=120, unique=True)
+    description = models.TextField(blank=True)
 
     def __str__(self):
         return self.name
 
 class Supplier(models.Model):
-    name = models.CharField(max_length=255)
-    contact = models.CharField(max_length=20)  # Added
-    email = models.EmailField()                # Added
-    address = models.TextField()
+    name = models.CharField(max_length=160, unique=True)
+    email = models.EmailField(blank=True)
+    phone = models.CharField(max_length=40, blank=True)
+    address = models.TextField(blank=True)
 
     def __str__(self):
         return self.name
 
 class Product(models.Model):
-    sku = models.CharField(max_length=50, unique=True)   # ✅ Added
-    name = models.CharField(max_length=100)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="products")
+    supplier = models.ForeignKey(Supplier, on_delete=models.SET_NULL, null=True, blank=True, related_name="products")
+    name = models.CharField(max_length=160)
+    sku = models.CharField(max_length=80, unique=True)  # Stock keeping unit
+    stock = models.PositiveIntegerField(default=0)
+    low_stock_threshold = models.PositiveIntegerField(default=5)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    selling_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # ✅ Added
-    quantity = models.PositiveIntegerField(default=0)  # ✅ Added
-    stock = models.PositiveIntegerField(default=0)     # optional
-    low_stock = models.BooleanField(default=False)     # ✅ Added
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        unique_together = ("category", "name")
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.sku})"
 
-class StockMovement(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    movement_type = models.CharField(max_length=50, choices=[('IN', 'Stock In'), ('OUT', 'Stock Out')])
-    quantity = models.PositiveIntegerField()
-    note = models.TextField(blank=True, null=True)   # ✅ Added
-    created_at = models.DateTimeField(auto_now_add=True)  # ✅ Added
-
-    def __str__(self):
-        return f"{self.movement_type} - {self.product.name}"
+    @property
+    def is_low(self):
+        return self.stock <= self.low_stock_threshold

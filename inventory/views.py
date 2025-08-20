@@ -1,75 +1,107 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Product, Category, Supplier
-from .forms import ProductForm, CategoryForm, SupplierForm
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Category, Supplier, Product
+from .forms import CategoryForm, SupplierForm, ProductForm
+from .decorators import admin_required, staff_required  # <- move your decorators to inventory/decorators.py
 
-def dashboard(request):
-    products = Product.objects.all()
-    categories = Category.objects.all()
-    suppliers = Supplier.objects.all()
-    low_stock = products.filter(quantity__lte=5)
-    return render(request, "dashboard.html", {
-        "products": products,
-        "categories": categories,
-        "suppliers": suppliers,
-        "low_stock": low_stock
-    })
+@admin_required
+def category_list(request):
+    qs = Category.objects.all().order_by("name")
+    return render(request, "inventory/category_list.html", {"categories": qs})
 
-def product_add(request):
-    form = ProductForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect('dashboard')
-    return render(request, 'form.html', {'form': form, 'title': 'Add Product'})
-
-def product_edit(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    form = ProductForm(request.POST or None, instance=product)
-    if form.is_valid():
-        form.save()
-        return redirect('dashboard')
-    return render(request, 'form.html', {'form': form, 'title': 'Edit Product'})
-
-def product_delete(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    product.delete()
-    return redirect('dashboard')
-
-def category_add(request):
+@admin_required
+def category_create(request):
     form = CategoryForm(request.POST or None)
     if form.is_valid():
         form.save()
-        return redirect('dashboard')
-    return render(request, 'form.html', {'form': form, 'title': 'Add Category'})
+        messages.success(request, "Category created.")
+        return redirect("category_list")
+    return render(request, "inventory/form.html", {"form": form, "title": "Create Category"})
 
-def category_edit(request, pk):
-    category = get_object_or_404(Category, pk=pk)
-    form = CategoryForm(request.POST or None, instance=category)
+@admin_required
+def category_update(request, pk):
+    obj = get_object_or_404(Category, pk=pk)
+    form = CategoryForm(request.POST or None, instance=obj)
     if form.is_valid():
         form.save()
-        return redirect('dashboard')
-    return render(request, 'form.html', {'form': form, 'title': 'Edit Category'})
+        messages.success(request, "Category updated.")
+        return redirect("category_list")
+    return render(request, "inventory/form.html", {"form": form, "title": "Edit Category"})
 
+@admin_required
 def category_delete(request, pk):
-    category = get_object_or_404(Category, pk=pk)
-    category.delete()
-    return redirect('dashboard')
+    obj = get_object_or_404(Category, pk=pk)
+    if request.method == "POST":
+        obj.delete()
+        messages.success(request, "Category deleted.")
+        return redirect("category_list")
+    return render(request, "inventory/confirm_delete.html", {"object": obj, "title": "Delete Category"})
 
-def supplier_add(request):
+@admin_required
+def supplier_list(request):
+    qs = Supplier.objects.all().order_by("name")
+    return render(request, "inventory/supplier_list.html", {"suppliers": qs})
+
+@admin_required
+def supplier_create(request):
     form = SupplierForm(request.POST or None)
     if form.is_valid():
         form.save()
-        return redirect('dashboard')
-    return render(request, 'form.html', {'form': form, 'title': 'Add Supplier'})
+        messages.success(request, "Supplier created.")
+        return redirect("supplier_list")
+    return render(request, "inventory/form.html", {"form": form, "title": "Create Supplier"})
 
-def supplier_edit(request, pk):
-    supplier = get_object_or_404(Supplier, pk=pk)
-    form = SupplierForm(request.POST or None, instance=supplier)
+@admin_required
+def supplier_update(request, pk):
+    obj = get_object_or_404(Supplier, pk=pk)
+    form = SupplierForm(request.POST or None, instance=obj)
     if form.is_valid():
         form.save()
-        return redirect('dashboard')
-    return render(request, 'form.html', {'form': form, 'title': 'Edit Supplier'})
+        messages.success(request, "Supplier updated.")
+        return redirect("supplier_list")
+    return render(request, "inventory/form.html", {"form": form, "title": "Edit Supplier"})
 
+@admin_required
 def supplier_delete(request, pk):
-    supplier = get_object_or_404(Supplier, pk=pk)
-    supplier.delete()
-    return redirect('dashboard')
+    obj = get_object_or_404(Supplier, pk=pk)
+    if request.method == "POST":
+        obj.delete()
+        messages.success(request, "Supplier deleted.")
+        return redirect("supplier_list")
+    return render(request, "inventory/confirm_delete.html", {"object": obj, "title": "Delete Supplier"})
+
+@staff_required
+def product_list(request):
+    qs = Product.objects.select_related("category", "supplier").order_by("name")
+    low = qs.filter(stock__lte=models.F("low_stock_threshold"))
+    return render(request, "inventory/product_list.html", {"products": qs, "low_products": low})
+
+@admin_required
+def product_create(request):
+    form = ProductForm(request.POST or None)
+    if form.is_valid():
+        obj = form.save(commit=False)
+        obj.created_by = request.user
+        obj.save()
+        messages.success(request, "Product created.")
+        return redirect("product_list")
+    return render(request, "inventory/form.html", {"form": form, "title": "Create Product"})
+
+@admin_required
+def product_update(request, pk):
+    obj = get_object_or_404(Product, pk=pk)
+    form = ProductForm(request.POST or None, instance=obj)
+    if form.is_valid():
+        form.save()
+        messages.success(request, "Product updated.")
+        return redirect("product_list")
+    return render(request, "inventory/form.html", {"form": form, "title": "Edit Product"})
+
+@admin_required
+def product_delete(request, pk):
+    obj = get_object_or_404(Product, pk=pk)
+    if request.method == "POST":
+        obj.delete()
+        messages.success(request, "Product deleted.")
+        return redirect("product_list")
+    return render(request, "inventory/confirm_delete.html", {"object": obj, "title": "Delete Product"})
