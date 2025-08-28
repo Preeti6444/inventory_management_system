@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.conf import settings
 
 class User(AbstractUser):
@@ -8,9 +8,22 @@ class User(AbstractUser):
         ('staff', 'Staff'),
     )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='staff')
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+
+    groups = models.ManyToManyField(
+        Group,
+        related_name="inventory_users",
+        blank=True,
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name="inventory_users_permissions",
+        blank=True,
+    )
 
     def __str__(self):
         return self.username
+
 
 class Category(models.Model):
     name = models.CharField(max_length=120, unique=True)
@@ -18,6 +31,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Supplier(models.Model):
     name = models.CharField(max_length=160, unique=True)
@@ -27,6 +41,7 @@ class Supplier(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="products")

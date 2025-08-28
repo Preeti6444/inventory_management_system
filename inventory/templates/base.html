@@ -13,6 +13,7 @@
     <a href="{% url 'category_list' %}" class="btn btn-link">Categories</a>
     <a href="{% url 'supplier_list' %}" class="btn btn-link">Suppliers</a>
     <a href="/admin/" class="btn btn-link">Admin</a>
+    <a href="{% url 'no_permission' %}">Permission Help</a>
   </nav>
   {% block content %}{% endblock %}
 </body>

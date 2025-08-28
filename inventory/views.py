@@ -1,8 +1,10 @@
+from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Category, Supplier, Product
 from .forms import CategoryForm, SupplierForm, ProductForm
 from .decorators import admin_required, staff_required  # <- move your decorators to inventory/decorators.py
+from .decorators import allowed_users
 
 @admin_required
 def category_list(request):
@@ -105,3 +107,20 @@ def product_delete(request, pk):
         messages.success(request, "Product deleted.")
         return redirect("product_list")
     return render(request, "inventory/confirm_delete.html", {"object": obj, "title": "Delete Product"})
+
+@login_required
+@permission_required('inventory.view_item', raise_exception=True)
+def restricted_view(request):
+    return render(request, 'inventory/restricted_page.html')
+
+def no_permission_view(request):
+    return render(request, 'inventory/no_permission.html')
+
+@allowed_users(allowed_roles=['Admin'])
+def dashboard(request):
+    # only admins can access
+    return render(request, 'inventory/dashboard.html')
+
+def some_protected_view(request):
+    if not request.user.has_perm('inventory.can_add_product'):  # Example condition
+        return redirect('no_permission') 

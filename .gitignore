@@ -1,0 +1,5 @@
+db.sqlite3
+__pycache__/
+*.pyc
+inventory_management_system_clean/
+inventory_management_system/
