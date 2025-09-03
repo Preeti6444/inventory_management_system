@@ -4,7 +4,8 @@ from . import views
 urlpatterns = [
     # dashboard/basic
     path("", views.product_list, name="home"),
-
+    path('', views.home, name='home'),
+    
     # category
     path("categories/", views.category_list, name="category_list"),
     path("categories/create/", views.category_create, name="category_create"),

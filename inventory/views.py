@@ -5,6 +5,8 @@ from .models import Category, Supplier, Product
 from .forms import CategoryForm, SupplierForm, ProductForm
 from .decorators import admin_required, staff_required  # <- move your decorators to inventory/decorators.py
 from .decorators import allowed_users
+from django.http import HttpResponse
+from django.db import models
 
 @admin_required
 def category_list(request):
@@ -124,3 +126,6 @@ def dashboard(request):
 def some_protected_view(request):
     if not request.user.has_perm('inventory.can_add_product'):  # Example condition
         return redirect('no_permission') 
+    
+def home(request):
+    return HttpResponse("Inventory Management System Home Page")
