@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
-from django.contrib.auth.models import User
+#from django.contrib.auth.models import User
 from django.db.utils import OperationalError
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -123,7 +123,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'inventory.User'
+AUTH_USER_MODEL = 'auth.User'
 
 try:
     if not User.objects.filter(username="preetipore").exists():
