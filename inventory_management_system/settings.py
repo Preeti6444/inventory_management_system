@@ -21,7 +21,7 @@ DEBUG = False
 
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["inventory-management-system-6-gz9e.onrender.com",  #Render domain
+ALLOWED_HOSTS = ["inventory-management-system-10.onrender.com",  #Render domain
     "inventory-management-system.onrender.com",        
     "localhost",
     "127.0.0.1"]  
