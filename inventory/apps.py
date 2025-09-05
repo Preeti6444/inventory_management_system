@@ -8,10 +8,9 @@ class InventoryConfig(AppConfig):
     name = "inventory"
 
     def ready(self):
-        # Import signals safely
-        import inventory.signals  
+        # Remove signals import if not needed
+        # import inventory.signals  
 
-        # Create default superuser if not exists
         try:
             User = get_user_model()
             if not User.objects.filter(username="admin").exists():
@@ -20,7 +19,7 @@ class InventoryConfig(AppConfig):
                     email="admin@example.com",
                     password="adminpassword"
                 )
-                print("Superuser created: admin / adminpassword")
+                print("✅ Superuser created: admin / adminpassword")
         except (OperationalError, ProgrammingError):
-            # Database is not ready yet (during first migrate, etc.)
+            # Database is not ready yet
             pass
