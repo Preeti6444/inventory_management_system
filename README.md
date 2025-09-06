@@ -40,19 +40,33 @@ python manage.py createsuperuser
 
 ## Project Structure 
 inventory_management_system/
+
 ├── inventory_management_system/   # Project settings
-│ ├── settings.py
-│ ├── urls.py
-│  └── wsgi.py
-├── inventory/                    # Main app
-│ ├── models.py                  # Product, Category, Supplier models
-│ ├── views.py                   # CRUD views
-│ ├── urls.py                    # App routes
-│ ├── templates/                 # HTML templates
-│ ├── static/                    # CSS, JS, Bootstrap
+
+│   ├── settings.py
+
+│   ├── urls.py
+
+│    └── wsgi.py
+
+├── inventory/  # Main app
+
+│   ├── models.py                  # Product, Category, Supplier models
+
+│   ├── views.py                   # CRUD views
+
+│   ├── urls.py                    # App routes
+
+│   ├── templates/                 # HTML templates
+
+│   ├── static/                    # CSS, JS, Bootstrap
+
 ├── manage.py
+
 ├── requirements.txt
+
 └── README.md
+
 ---
 ## API Endpoints
 📌 API Endpoints
