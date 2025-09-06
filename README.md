@@ -16,7 +16,96 @@ This project helps businesses manage **Products, Categories, and Suppliers**, wi
 - Bootstrap-based dashboard
 
 ---
+## Usage
 
+1. Start the development server:
+   ```bash
+   python manage.py runserver
+Open your browser and go to:
+
+cpp
+Copy code
+http://127.0.0.1:8000/
+Access the admin panel at:
+
+arduino
+Copy code
+http://127.0.0.1:8000/admin/
+Default superuser can be created with:
+
+bash
+Copy code
+python manage.py createsuperuser
+---
+
+## Project Structure 
+inventory_management_system/
+│
+├── inventory_management_system/   # Project settings
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+│
+├── inventory/                     # Main app
+│   ├── models.py                  # Product, Category, Supplier models
+│   ├── views.py                   # CRUD views
+│   ├── urls.py                    # App routes
+│   ├── templates/                 # HTML templates
+│   ├── static/                    # CSS, JS, Bootstrap
+│
+├── manage.py
+├── requirements.txt
+└── README.md
+---
+## API Endpoints
+📌 API Endpoints
+🔑 Authentication
+
+POST /api/auth/login/ → Login and get token/session
+
+POST /api/auth/logout/ → Logout
+
+📦 Products
+
+GET /api/products/ → List all products
+
+POST /api/products/ → Create a new product
+
+GET /api/products/{id}/ → Get details of a single product
+
+PUT /api/products/{id}/ → Update a product
+
+PATCH /api/products/{id}/ → Partial update
+
+DELETE /api/products/{id}/ → Delete a product
+
+🏷 Categories
+
+GET /api/categories/ → List all categories
+
+POST /api/categories/ → Create a new category
+
+GET /api/categories/{id}/ → Get details of a single category
+
+PUT /api/categories/{id}/ → Update a category
+
+PATCH /api/categories/{id}/ → Partial update
+
+DELETE /api/categories/{id}/ → Delete a category
+
+🚚 Suppliers
+
+GET /api/suppliers/ → List all suppliers
+
+POST /api/suppliers/ → Create a new supplier
+
+GET /api/suppliers/{id}/ → Get details of a single supplier
+
+PUT /api/suppliers/{id}/ → Update a supplier
+
+PATCH /api/suppliers/{id}/ → Partial update
+
+DELETE /api/suppliers/{id}/ → Delete a supplier
 ## Tech Stack
 - **Backend:** Django (Python)
 - **Frontend:** HTML, CSS, Bootstrap
@@ -33,6 +122,54 @@ django==5.2
 requirements.txt
 djangorestframework
 django-filter
+
+## Deployment 
+On Render
+
+Push your code to GitHub.
+
+Connect your repository to Render/Heroku.
+
+Add requirements.txt and Procfile.
+
+Set environment variables (e.g., SECRET_KEY, DEBUG=False).
+
+Deploy and test.
+---
+
+## Important Links
+
+Live Demo:
+
+[Live Site](https://inventory-management-system-10.onrender.com/)
+
+
+Admin Panel:
+
+[Admin Panel](https://inventory-management-system-10.onrender.com/admin/)
+
+
+API Endpoints:
+
+- [Products](https://inventory-management-system-10.onrender.com/products/)
+- [Categories](https://inventory-management-system-10.onrender.com/categories/)
+- [Suppliers](https://inventory-management-system-10.onrender.com/suppliers/)
+
+
+GitHub Repo:
+
+[GitHub Repository](https://github.com/Preeti6444/inventory_management_system)
+
+📌 Putting it all together in your README.md
+## Live Demo
+- [Project Homepage](https://inventory-management-system-10.onrender.com/)
+- [Admin Panel](https://inventory-management-system-10.onrender.com/admin/)
+
+## API Endpoints
+- [Products](https://inventory-management-system-10.onrender.com/api/products/)
+- [Categories](https://inventory-management-system-10.onrender.com/api/categories/)
+- [Suppliers](https://inventory-management-system-10.onrender.com/api/suppliers/)
+---
 
 ## Screenshots
 <img width="1920" height="1020" alt="Site administration _ Django site admin - Google Chrome 9_6_2025 6_59_24 PM" src="https://github.com/user-attachments/assets/d12ae552-161e-4439-9967-e7a14574e64f" />
