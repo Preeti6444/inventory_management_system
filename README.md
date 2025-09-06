@@ -47,25 +47,69 @@ inventory_management_system/
 
 │   ├── urls.py
 
-│    └── wsgi.py
+|   ├── asgi.py
+
+│   ├── wsgi.py
 
 ├── inventory/  # Main app
 
+│   ├── __init__.py   
+
+│   ├── admin.py    
+
+│   ├── api.py   
+
+│   ├── apps.py  
+
+│   ├── decorators.py    
+
+│   ├── forms.py    
+
 │   ├── models.py                  # Product, Category, Supplier models
+
+│   ├── serializers.py  
+
+│   ├── tests.py 
 
 │   ├── views.py                   # CRUD views
 
 │   ├── urls.py                    # App routes
 
-│   ├── templates/                 # HTML templates
+│   ├── templates/  # HTML templates
 
+        └── Inventory
+
+            └── base.html
+
+            └── category_list.html
+
+            └── confirm_delete.html
+
+            └── dashboard.html
+
+            └── form.html
+
+            └── no_permission.html
+
+            └── products_list.html
+
+            └── supplier_list.html
+            
+        └── base.html
+        
 │   ├── static/                    # CSS, JS, Bootstrap
 
 ├── manage.py
 
+├── Procfile
+
+├── db.sqlite3
+
+├── .gitignore
+
 ├── requirements.txt
 
-└── README.md
+├── README.md
 
 ---
 ## API Endpoints
